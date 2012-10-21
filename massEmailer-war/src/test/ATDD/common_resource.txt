@@ -1,0 +1,33 @@
+*** Settings ***
+Documentation     A resource file with variables common to both HTML and Flex\nversions of the application. The correct SUT specific resource\nis imported based on ${SUT} variable. SeleniumLibrary is also\nimported here so that no other file needs to import it.
+Library           SeleniumLibrary
+
+*** Variables ***
+${SUT}            html
+${SERVER}         http://localhost:8080/massEmailer/
+${BROWSER}        firefox
+${DELAY}          0
+${VALID USER}     demo
+${VALID PASSWD}    mode
+${MAIL SENT SUCCESSFULLY}    email has been successfully sent
+${INVALID EMAIL ADDRESS}    Email format error for
+${massEmailPage}    mail/index.htm
+${Empty}          ${EMPTY}
+${ERROR MISSING RECIPIENTS}    Error: Missing Recipients
+${ERROR MISSING SUBJECT}    Error: Missing Subject
+${ERROR MISSING MESSAGE}    Error: Missing Message
+${RECIPIENT ADDED}    Recipient added
+${BOTH FIRST AND LAST NAME ARE MISSING}    missing both last and first name
+${DUPLICATE RECIPIENT}    Recipient exists in system
+${ADD_RECIPIENT_PAGE}    recipient/add.htm
+${INVALID RECIPIENT EMAIL ADDRESS}    error email pattern: email is not valid
+${add recipient email field}    email
+${add recipient first name field}    firstname
+${add recipient last name field}    lastname
+${add recipient status field}    lblStatusMessage
+${send email recipients field}    recipients
+${send email subject field}    subject
+${send email message field}    message
+${send email status field}    lblStatusMessage
+
+*** Keywords ***

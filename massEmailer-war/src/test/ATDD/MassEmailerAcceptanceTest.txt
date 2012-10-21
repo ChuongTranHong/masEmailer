@@ -1,0 +1,51 @@
+*** Settings ***
+Resource          common_resource.txt
+Library           com.wiser.WiserLibrary
+
+*** Test Cases ***
+SendMail
+    [Tags]    not_ready
+    [Setup]    Setup Env
+    [Template]    Check Form Submission Status
+    maysam@oddv.com    this a subject    Hi, \ Congratulation if you see this    ${MAIL SENT SUCCESSFULLY}
+    [Teardown]
+
+FailSendMail
+    [Tags]    not_ready
+    [Setup]
+    [Template]    Check Failing Form Submission Status
+    dsf    this a subject    Hi, \ Congratulation if you see this    ${INVALID EMAIL ADDRESS}
+    sdfsd@sdfds.sfdds!    this a subject    Hi, \ Congratulation if you see this    ${INVALID EMAIL ADDRESS}
+    [Teardown]    Shutdown Env
+
+*** Keywords ***
+Check Form Submission Status
+    [Arguments]    ${email}    ${subject}    ${body}    ${message}
+    Open Browser    ${server}${massEmailPage}    ${BROWSER}
+    Input Text    ${send email recipients field}    ${email}
+    Input Text    ${send email subject field}    ${subject}
+    Input Text    ${send email message field}    ${body}
+    Submit Form
+    Check Email    ${email}    ${subject}    ${body}
+    ${errorMessage}    Get Text    ${send email status field}
+    Should Be Equal As Strings    ${errorMessage}    ${message}
+    Close All Browsers
+
+Setup Env
+    Start Wiser
+    Start Selenium Server
+
+Shutdown Env
+    Stop Selenium Server
+    Stop Wiser
+
+Check Failing Form Submission Status
+    [Arguments]    ${email}    ${subject}    ${body}    ${message}
+    Open Browser    ${server}${massEmailPage}    ${BROWSER}
+    Input Text    ${send email recipients field}    ${email}
+    Input Text    ${send email subject field}    ${subject}
+    Input Text    ${send email message field}    ${body}
+    Submit Form
+    ${errorMessage}    Get Text    ${send email status field}
+    Should Be Equal As Strings    ${errorMessage}    ${message} ${email}
+    Close All Browsers

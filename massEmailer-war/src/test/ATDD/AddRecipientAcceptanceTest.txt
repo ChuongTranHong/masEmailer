@@ -1,0 +1,55 @@
+*** Settings ***
+Suite Setup       Setup Env
+Suite Teardown    Shutdown Env
+Default Tags      not_ready
+Resource          common_resource.txt
+
+*** Test Cases ***
+AddRecipientSuccessFully
+    [Template]    Add Recipient
+    abc@gmail.com    jon    stewart    ${RECIPIENT ADDED}
+    another@yahoo.com    craig    \    ${RECIPIENT ADDED}
+    diring@hotmail.com    \    scott    ${RECIPIENT ADDED}
+
+AddInvalidlRecipientFails
+    [Template]    Add Recipient
+    wrongemail@something!!!    barak    obama    ${INVALID RECIPIENT EMAIL ADDRESS}
+    validemail@gmail.com    \    \    ${BOTH FIRST AND LAST NAME ARE MISSING}
+
+AddingDuplicateRecipientFails
+    [Template]    Add Two Recipient
+    abc@gmail.com    john    martin    abc@gmail.com    mike    jordan    ${DUPLICATE RECIPIENT}
+
+*** Keywords ***
+Setup Env
+    Start Selenium Server
+
+Shutdown Env
+    Stop Selenium Server
+
+Add Recipient
+    [Arguments]    ${email}    ${first name}    ${last name}    ${expected status}
+    Open Browser    ${server}${ADD_RECIPIENT_PAGE}    ${BROWSER}
+    Input Text    ${add recipient email field}    ${email}
+    Input Text    ${add recipient first name field}    ${first name}
+    Input Text    ${add recipient last name field}    ${last name}
+    Submit Form
+    ${errorMessage}    Get Text    ${add recipient status field}
+    Should Be Equal As Strings    ${errorMessage}    ${expected status}
+    Close All Browsers
+
+Add Two Recipient
+    [Arguments]    ${email 1}    ${first name 1}    ${last name 1}    ${email 2}    ${first name 2}    ${last name 2}
+    ...    ${expected status}
+    Open Browser    ${server}${ADD_RECIPIENT_PAGE}    ${BROWSER}
+    Input Text    ${add recipient email field}    ${email 1}
+    Input Text    ${add recipient first name field}    ${first name 1}
+    Input Text    ${add recipient last name field}    ${last name 1}
+    Submit Form
+    Input Text    ${add recipient email field}    ${email 2}
+    Input Text    ${add recipient first name field}    ${first name 2}
+    Input Text    ${add recipient last name field}    ${last name 2}
+    Submit Form
+    ${errorMessage}    Get Text    ${add recipient status field}
+    Should Be Equal As Strings    ${errorMessage}    ${expected status}
+    Close All Browsers
